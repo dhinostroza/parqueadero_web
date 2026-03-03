@@ -32,9 +32,14 @@ export async function renderGuard(container) {
         <div style="display:flex; gap: 8px;">
           <button class="btn btn-primary" id="guard-search-btn" style="white-space:nowrap;">Buscar</button>
           
-          <button class="btn btn-outline" id="guard-btn-camera" style="white-space:nowrap; display:flex; align-items:center; gap: 6px;" title="Activar Cámara">
-            <span>📷 Escanear</span>
+          <button class="btn btn-outline" id="guard-btn-camera" style="white-space:nowrap; display:flex; align-items:center; gap: 6px;" title="Cámara en vivo">
+            <span>📷 Cámara</span>
           </button>
+
+          <label class="btn btn-outline" style="cursor:pointer; white-space:nowrap; display:flex; align-items:center; gap: 6px;" title="Subir Imagen">
+            <span>📁 Archivo</span>
+            <input type="file" id="guard-ocr-input-file" accept="image/*" style="display:none;" />
+          </label>
         </div>
       </div>
       
@@ -62,6 +67,7 @@ export async function renderGuard(container) {
 
   // Camera Elements
   const btnCamera = container.querySelector('#guard-btn-camera');
+  const fileInput = container.querySelector('#guard-ocr-input-file');
   const cameraContainer = container.querySelector('#camera-container');
   const cameraVideo = container.querySelector('#camera-video');
   const cameraCanvas = container.querySelector('#camera-canvas');
@@ -73,6 +79,15 @@ export async function renderGuard(container) {
   searchInput.addEventListener('keydown', e => {
     if (e.key === 'Enter') lookupDriver(searchInput.value);
   });
+
+  if (fileInput) {
+    fileInput.addEventListener('change', (e) => {
+      if (e.target.files && e.target.files.length > 0) {
+        handleOCRScan(e.target.files[0], searchInput, ocrStatus);
+        e.target.value = ''; // Reset
+      }
+    });
+  }
 
   const stopCamera = () => {
     if (mediaStream) {
