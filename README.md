@@ -2,6 +2,12 @@
 
 Aplicación web progresiva (SPA) orientada a la gestión, control y auditoría de los espacios de estacionamiento en el Hospital Pablo Arturo Suárez. Diseñada para operar de manera resiliente, incluso en redes inestables, con soporte para bases de datos relacionales (Supabase/PostgreSQL) y un modo de respaldo sin conexión (`localStorage`).
 
+## 🧬 Origen del Proyecto (Migración desde REDCap)
+
+Este proyecto nació con el objetivo de modernizar la estructura de recolección de datos que originalmente se manejaba mediante **REDCap**.
+La base de este nuevo sistema y su modelo de base de datos se infirieron analizando la estructura del archivo `Parqueadero_2026-03-02_2307.REDCap.xml` heredado.
+El rediseño permite una interfaz táctil, veloz, independiente, y elimina las restricciones visuales y de interacción del formulario REDCap original (como la capacidad del guardia de reportar incidentes con cámara in situ y visualizar mapas), manteniendo compatibilidad a futuro para ingestar lotes de "usuarios autorizados" provenientes del departamento de HR que todavía use REDCap en el hospital.
+
 ## ✨ Características Principales
 
 *   **Gestión de Guardias y Accesos:** Interfaz optimizada y rápida para que los guardias de seguridad manejen el flujo de entrada y salida mediante búsqueda por número de cédula o placa.
