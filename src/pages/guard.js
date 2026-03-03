@@ -123,14 +123,38 @@ export async function renderGuard(container) {
     cameraCanvas.width = width;
     cameraCanvas.height = height;
 
-    const ctx = cameraCanvas.getContext('2d');
+    const ctx = cameraCanvas.getContext('2d', { willReadFrequently: true });
     ctx.drawImage(cameraVideo, 0, 0, width, height);
+
+    // Image Preprocessing to enhance OCR readability (Grayscale + Contrast)
+    try {
+      const imgData = ctx.getImageData(0, 0, width, height);
+      const data = imgData.data;
+      const contrast = 1.5; // Enhance contrast by 50%
+
+      for (let i = 0; i < data.length; i += 4) {
+        // 1. Convert to grayscale
+        let gray = (data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114);
+
+        // 2. Apply contrast formula
+        gray = contrast * (gray - 128) + 128;
+
+        // 3. Clamp values
+        if (gray > 255) gray = 255;
+        if (gray < 0) gray = 0;
+
+        data[i] = data[i + 1] = data[i + 2] = gray;
+      }
+      ctx.putImageData(imgData, 0, 0);
+    } catch (e) {
+      console.warn("No se pudo aplicar el filtro blanco y negro", e);
+    }
 
     cameraCanvas.toBlob(blob => {
       stopCamera();
       const file = new File([blob], "capture.jpg", { type: "image/jpeg" });
       handleOCRScan(file, searchInput, ocrStatus);
-    }, 'image/jpeg', 0.95);
+    }, 'image/jpeg', 1.0);
   });
 }
 
