@@ -140,6 +140,10 @@ async function handleOCRScan(file, inputElement, statusElement) {
   statusElement.style.display = 'block';
   statusElement.innerHTML = `<span style="color:var(--primary);">⏳ Procesando imagen, un momento...</span>`;
 
+  // Display a temporary preview of what the camera captured to help debug
+  const previewUrl = URL.createObjectURL(file);
+  const previewRenderer = `<div style="margin-top:8px;"><img src="${previewUrl}" style="max-height: 100px; border-radius: var(--radius-sm); border: 1px solid var(--border-color);" alt="Captura a analizar"/></div>`;
+
   // Tesseract configuration
   try {
     const worker = await Tesseract.createWorker('spa');
@@ -147,26 +151,37 @@ async function handleOCRScan(file, inputElement, statusElement) {
     const text = ret.data.text.trim().toUpperCase();
     await worker.terminate();
 
-    // Regex to match typical Ecuadorian plates: 3 letters, optional dash, 3-4 numbers
-    // Ignoring explicit words like ECUADOR or other noises.
-    const plateRegex = /[A-Z]{3}\s*-?\s*\d{3,4}/g;
+    // 1. Tesseract often reads 0 as O, 1 as I, etc.
+    // We do a primary generic search for 2-3 letters followed by 3-4 numbers.
+    // If it's a bit fuzzy, we let it pass.
+    let cleanT = text.replace(/O/g, '0').replace(/I/g, '1');
+    // regex: 3 letters, optional spaces/dash, 3 to 4 numbers. 
+    // Wait, typical is 3 numbers + 3-4 numbers. But the letters are first. Let's just rely on the original text, but upper cased.
+
+    const plateRegex = /[a-zA-Z]{2,3}[-\s]*\d{3,4}/g;
     const matches = text.match(plateRegex);
 
     if (matches && matches.length > 0) {
       // Clean up the match (remove spaces, ensure uppercase)
-      const cleanedPlate = matches[0].replace(/\s+/g, '').replace('-', '').substring(0, 10);
+      const rawPlate = matches[0].replace(/[\s-]/g, '').substring(0, 10).toUpperCase();
+
+      // Ensure 'O' in the number section is turned into '0' (e.g. PCA12O4 -> PCA1204)
+      const cleanedPlate = rawPlate.replace(/^([A-Z]{2,3})(.*)$/, (_, letters, numbers) => {
+        return letters + numbers.replace(/O/g, '0').replace(/I/g, '1').replace(/S/g, '5');
+      });
+
       inputElement.value = cleanedPlate;
-      statusElement.innerHTML = `<span style="color:var(--success);">✅ Placa detectada: ${cleanedPlate}</span>`;
+      statusElement.innerHTML = `<span style="color:var(--success);">✅ Placa detectada: ${cleanedPlate}</span>${previewRenderer}`;
 
       // Auto trigger search
       lookupDriver(cleanedPlate);
     } else {
-      statusElement.innerHTML = `<span style="color:var(--danger);">❌ No se detectó ninguna placa clara. Lee manualmente.</span>`;
+      statusElement.innerHTML = `<span style="color:var(--danger);">❌ No se detectó ninguna placa. La IA leyó: "${text.substring(0, 30)}...".</span>${previewRenderer}`;
       console.log("Valores crudos leídos del OCR:", text);
     }
 
   } catch (error) {
-    statusElement.innerHTML = `<span style="color:var(--danger);">❌ Error procesando OCR: ${error.message}</span>`;
+    statusElement.innerHTML = `<span style="color:var(--danger);">❌ Error procesando OCR: ${error.message}</span>${previewRenderer}`;
     console.error("OCR Error:", error);
   }
 }
