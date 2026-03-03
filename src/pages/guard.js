@@ -26,11 +26,20 @@ export async function renderGuard(container) {
     <!-- Cédula Search -->
     <div class="card" style="margin-bottom:var(--sp-6);">
       <div class="card-header"><span class="card-title">🔍 Buscar Vehículo o Conductor</span></div>
-      <div class="guard-search">
-        <input type="text" class="form-input" id="guard-cedula" placeholder="Ingrese la cédula o placa..." maxlength="10" autofocus />
-        <button class="btn btn-primary btn-lg" id="guard-search-btn">Buscar</button>
+      <div class="guard-search" style="display:flex; gap: 8px; flex-wrap: wrap;">
+        <input type="text" class="form-input" style="flex:1; min-width: 200px;" id="guard-cedula" placeholder="Ingrese la cédula o placa..." maxlength="10" autofocus />
+        
+        <div style="display:flex; gap: 8px;">
+          <button class="btn btn-primary" id="guard-search-btn" style="white-space:nowrap;">Buscar</button>
+          
+          <label class="btn btn-outline" style="cursor:pointer; white-space:nowrap; display:flex; align-items:center; gap: 6px;" title="Escanear Placa">
+            <span>📷 Escanear</span>
+            <input type="file" id="guard-ocr-input" accept="image/*" capture="environment" style="display:none;" />
+          </label>
+        </div>
       </div>
-      <div id="guard-driver-info"></div>
+      <div id="ocr-status" style="font-size: 0.8rem; margin-top: 8px; color: var(--text-muted); display: none;"></div>
+      <div id="guard-driver-info" style="margin-top:var(--sp-4);"></div>
     </div>
 
     <!-- Workflow Steps -->
@@ -39,11 +48,53 @@ export async function renderGuard(container) {
 
   const searchInput = container.querySelector('#guard-cedula');
   const searchBtn = container.querySelector('#guard-search-btn');
+  const ocrInput = container.querySelector('#guard-ocr-input');
+  const ocrStatus = container.querySelector('#ocr-status');
 
   searchBtn.addEventListener('click', () => lookupDriver(searchInput.value));
   searchInput.addEventListener('keydown', e => {
     if (e.key === 'Enter') lookupDriver(searchInput.value);
   });
+
+  ocrInput.addEventListener('change', (e) => handleOCRScan(e, searchInput, ocrStatus));
+}
+
+async function handleOCRScan(event, inputElement, statusElement) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  statusElement.style.display = 'block';
+  statusElement.innerHTML = `<span style="color:var(--primary);">⏳ Procesando imagen, un momento...</span>`;
+
+  // Tesseract configuration
+  try {
+    const worker = await Tesseract.createWorker('spa');
+    const ret = await worker.recognize(file);
+    const text = ret.data.text.trim().toUpperCase();
+    await worker.terminate();
+
+    // Regex to match typical Ecuadorian plates: 3 letters, optional dash, 3-4 numbers
+    // Ignoring explicit words like ECUADOR or other noises.
+    const plateRegex = /[A-Z]{3}\s*-?\s*\d{3,4}/g;
+    const matches = text.match(plateRegex);
+
+    if (matches && matches.length > 0) {
+      // Clean up the match (remove spaces, ensure uppercase)
+      const cleanedPlate = matches[0].replace(/\s+/g, '').replace('-', '').substring(0, 10);
+      inputElement.value = cleanedPlate;
+      statusElement.innerHTML = `<span style="color:var(--success);">✅ Placa detectada: ${cleanedPlate}</span>`;
+
+      // Auto trigger search
+      lookupDriver(cleanedPlate);
+    } else {
+      statusElement.innerHTML = `<span style="color:var(--danger);">❌ No se detectó ninguna placa clara. Lee manualmente.</span>`;
+      console.log("Valores crudos leídos del OCR:", text);
+    }
+
+  } catch (error) {
+    statusElement.innerHTML = `<span style="color:var(--danger);">❌ Error procesando OCR: ${error.message}</span>`;
+    console.error("OCR Error:", error);
+  }
 }
 
 async function lookupDriver(cedula) {
