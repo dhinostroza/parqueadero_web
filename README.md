@@ -68,4 +68,5 @@ La aplicación quedará servida internamente en el puerto configurado y enlazada
 *   **Mapa de Lotes:** Actualización del plano vectorial de estacionamientos una vez la Gerencia delimite los espacios totales.
 
 ---
-*Hospital Pablo Arturo Suárez - Departamento de Tecnologías de la Información*
+Hospital Pablo Arturo Suárez - Diagrama inicial: Departamento de Tecnologías de la Información.
+Desarrollo informático inicialmente en REDCap. Versión definitiva generada con Gemini 3.1 Pro, Claude Opus 4.6, y Google Antigravity
