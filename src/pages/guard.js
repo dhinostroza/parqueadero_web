@@ -32,12 +32,22 @@ export async function renderGuard(container) {
         <div style="display:flex; gap: 8px;">
           <button class="btn btn-primary" id="guard-search-btn" style="white-space:nowrap;">Buscar</button>
           
-          <label class="btn btn-outline" style="cursor:pointer; white-space:nowrap; display:flex; align-items:center; gap: 6px;" title="Escanear Placa">
+          <button class="btn btn-outline" id="guard-btn-camera" style="white-space:nowrap; display:flex; align-items:center; gap: 6px;" title="Activar Cámara">
             <span>📷 Escanear</span>
-            <input type="file" id="guard-ocr-input" accept="image/*" capture="environment" style="display:none;" />
-          </label>
+          </button>
         </div>
       </div>
+      
+      <!-- Camera Container -->
+      <div id="camera-container" style="display:none; margin-top: 1rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1rem; background: var(--bg-elevated); text-align: center;">
+         <video id="camera-video" autoplay playsinline style="width: 100%; max-width: 400px; border-radius: var(--radius-sm); background: #000;"></video>
+         <canvas id="camera-canvas" style="display:none;"></canvas>
+         <div style="margin-top: 1rem; display: flex; gap: 8px; justify-content: center;">
+             <button class="btn btn-primary" id="btn-take-photo">📸 Tomar Foto y Leer</button>
+             <button class="btn btn-secondary" id="btn-close-camera">Cancelar</button>
+         </div>
+      </div>
+
       <div id="ocr-status" style="font-size: 0.8rem; margin-top: 8px; color: var(--text-muted); display: none;"></div>
       <div id="guard-driver-info" style="margin-top:var(--sp-4);"></div>
     </div>
@@ -48,19 +58,68 @@ export async function renderGuard(container) {
 
   const searchInput = container.querySelector('#guard-cedula');
   const searchBtn = container.querySelector('#guard-search-btn');
-  const ocrInput = container.querySelector('#guard-ocr-input');
   const ocrStatus = container.querySelector('#ocr-status');
+
+  // Camera Elements
+  const btnCamera = container.querySelector('#guard-btn-camera');
+  const cameraContainer = container.querySelector('#camera-container');
+  const cameraVideo = container.querySelector('#camera-video');
+  const cameraCanvas = container.querySelector('#camera-canvas');
+  const btnTakePhoto = container.querySelector('#btn-take-photo');
+  const btnCloseCamera = container.querySelector('#btn-close-camera');
+  let mediaStream = null;
 
   searchBtn.addEventListener('click', () => lookupDriver(searchInput.value));
   searchInput.addEventListener('keydown', e => {
     if (e.key === 'Enter') lookupDriver(searchInput.value);
   });
 
-  ocrInput.addEventListener('change', (e) => handleOCRScan(e, searchInput, ocrStatus));
+  const stopCamera = () => {
+    if (mediaStream) {
+      mediaStream.getTracks().forEach(track => track.stop());
+      mediaStream = null;
+    }
+    cameraContainer.style.display = 'none';
+  };
+
+  btnCamera.addEventListener('click', async () => {
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      try {
+        mediaStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+        cameraVideo.srcObject = mediaStream;
+        cameraContainer.style.display = 'block';
+        ocrStatus.style.display = 'none';
+      } catch (err) {
+        showToast('No se pudo acceder a la cámara.', 'danger');
+        console.error("Camera access error:", err);
+      }
+    } else {
+      showToast('Tu navegador no soporta el acceso a la cámara web.', 'danger');
+    }
+  });
+
+  btnCloseCamera.addEventListener('click', stopCamera);
+
+  btnTakePhoto.addEventListener('click', () => {
+    if (!mediaStream) return;
+
+    const width = cameraVideo.videoWidth;
+    const height = cameraVideo.videoHeight;
+    cameraCanvas.width = width;
+    cameraCanvas.height = height;
+
+    const ctx = cameraCanvas.getContext('2d');
+    ctx.drawImage(cameraVideo, 0, 0, width, height);
+
+    cameraCanvas.toBlob(blob => {
+      stopCamera();
+      const file = new File([blob], "capture.jpg", { type: "image/jpeg" });
+      handleOCRScan(file, searchInput, ocrStatus);
+    }, 'image/jpeg', 0.95);
+  });
 }
 
-async function handleOCRScan(event, inputElement, statusElement) {
-  const file = event.target.files[0];
+async function handleOCRScan(file, inputElement, statusElement) {
   if (!file) return;
 
   statusElement.style.display = 'block';
