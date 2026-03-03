@@ -1,0 +1,166 @@
+# ═══════════════════════════════════════════════════════════════════════════
+# Parqueadero — Self-Hosted Supabase + Frontend
+# Run: docker compose --env-file .env.docker up -d
+# ═══════════════════════════════════════════════════════════════════════════
+
+services:
+
+  # ─── PostgreSQL 15 ─────────────────────────────────────────────────────
+  db:
+    image: supabase/postgres:15.8.1.060
+    container_name: parqueadero-db
+    restart: unless-stopped
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB:-parqueadero}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXP: 3600
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      - ./docker/volumes/db/init.sql:/docker-entrypoint-initdb.d/10-init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U supabase_admin -d ${POSTGRES_DB:-parqueadero}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    command:
+      - postgres
+      - -c
+      - wal_level=logical
+      - -c
+      - max_wal_senders=10
+      - -c
+      - max_replication_slots=10
+
+  # ─── PostgREST (auto-generated REST API) ──────────────────────────────
+  rest:
+    image: postgrest/postgrest:v12.2.8
+    container_name: parqueadero-rest
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      PGRST_DB_URI: postgres://authenticator:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-parqueadero}
+      PGRST_DB_SCHEMAS: ${PGRST_DB_SCHEMAS:-public}
+      PGRST_DB_ANON_ROLE: ${PGRST_DB_ANON_ROLE:-anon}
+      PGRST_JWT_SECRET: ${JWT_SECRET}
+      PGRST_DB_USE_LEGACY_GUCS: ${PGRST_DB_USE_LEGACY_GUCS:-false}
+      PGRST_APP_SETTINGS_JWT_SECRET: ${JWT_SECRET}
+      PGRST_APP_SETTINGS_JWT_EXP: 3600
+
+  # ─── Supabase Realtime ────────────────────────────────────────────────
+  realtime:
+    image: supabase/realtime:v2.33.70
+    container_name: parqueadero-realtime
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      PORT: 4000
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: supabase_admin
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      DB_NAME: ${POSTGRES_DB:-parqueadero}
+      DB_AFTER_CONNECT_QUERY: "SET search_path TO _realtime"
+      DB_ENC_KEY: supabaserealtime
+      API_JWT_SECRET: ${JWT_SECRET}
+      SECRET_KEY_BASE: ${JWT_SECRET}
+      ERL_AFLAGS: -proto_dist inet_tcp
+      DNS_NODES: "''"
+      RLIMIT_NOFILE: 10000
+      APP_NAME: realtime
+      SEED_SELF_HOST: "true"
+      REPLICATION_MODE: RLS
+      REPLICATION_POLL_INTERVAL: 100
+      SECURE_CHANNELS: "true"
+      SLOT_NAME: supabase_realtime_rls
+      TEMPORARY_SLOT: "true"
+      MAX_RECORD_BYTES: 1048576
+
+  # ─── Kong API Gateway ─────────────────────────────────────────────────
+  kong:
+    image: kong:3.8
+    container_name: parqueadero-kong
+    restart: unless-stopped
+    ports:
+      - "8000:8000/tcp"
+      - "8443:8443/tcp"
+    depends_on:
+      rest:
+        condition: service_started
+      realtime:
+        condition: service_started
+    environment:
+      KONG_DATABASE: "off"
+      KONG_DECLARATIVE_CONFIG: /home/kong/kong.yml
+      KONG_DNS_ORDER: LAST,A,CNAME
+      KONG_PLUGINS: request-transformer,cors,key-auth,acl,basic-auth
+      KONG_NGINX_PROXY_PROXY_BUFFER_SIZE: 160k
+      KONG_NGINX_PROXY_PROXY_BUFFERS: 64 160k
+      SUPABASE_ANON_KEY: ${ANON_KEY}
+      SUPABASE_SERVICE_KEY: ${SERVICE_ROLE_KEY}
+    volumes:
+      - ./docker/volumes/api/kong.yml:/home/kong/kong.yml:ro
+
+  # ─── Supabase Studio (optional admin dashboard on port 3000) ──────────
+  studio:
+    image: supabase/studio:20241202-71e5240
+    container_name: parqueadero-studio
+    restart: unless-stopped
+    ports:
+      - "${STUDIO_PORT:-3000}:3000/tcp"
+    depends_on:
+      kong:
+        condition: service_started
+    environment:
+      STUDIO_PG_META_URL: http://meta:8080
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      DEFAULT_ORGANIZATION_NAME: ${STUDIO_DEFAULT_ORGANIZATION:-Parqueadero}
+      DEFAULT_PROJECT_NAME: ${STUDIO_DEFAULT_PROJECT:-Parqueadero}
+      SUPABASE_URL: http://kong:8000
+      SUPABASE_PUBLIC_URL: ${SUPABASE_PUBLIC_URL:-http://localhost:8000}
+      SUPABASE_ANON_KEY: ${ANON_KEY}
+      SUPABASE_SERVICE_KEY: ${SERVICE_ROLE_KEY}
+      NEXT_PUBLIC_ENABLE_LOGS: "true"
+      NEXT_ANALYTICS_BACKEND_PROVIDER: postgres
+
+  # ─── pg-meta (introspection for Studio) ───────────────────────────────
+  meta:
+    image: supabase/postgres-meta:v0.84.2
+    container_name: parqueadero-meta
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      PG_META_PORT: 8080
+      PG_META_DB_HOST: db
+      PG_META_DB_PORT: 5432
+      PG_META_DB_NAME: ${POSTGRES_DB:-parqueadero}
+      PG_META_DB_USER: supabase_admin
+      PG_META_DB_PASSWORD: ${POSTGRES_PASSWORD}
+
+  # ─── Frontend (Vite app served by nginx on port 80) ───────────────────
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        VITE_SUPABASE_URL: ${VITE_SUPABASE_URL:-http://localhost:8000}
+        VITE_SUPABASE_ANON_KEY: ${VITE_SUPABASE_ANON_KEY}
+    container_name: parqueadero-frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      kong:
+        condition: service_started
+
+volumes:
+  db-data:
+    driver: local

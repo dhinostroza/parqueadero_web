@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ODM xmlns="http://www.cdisc.org/ns/odm/v1.3" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:redcap="https://projectredcap.org" xsi:schemaLocation="http://www.cdisc.org/ns/odm/v1.3 schema/odm/ODM1-3-1.xsd" ODMVersion="1.3.1" FileOID="000-00-0000" FileType="Snapshot" Description="Parqueadero" AsOfDateTime="2026-03-02T23:07:19" CreationDateTime="2026-03-02T23:07:19" SourceSystem="REDCap" SourceSystemVersion="16.1.4">
+<Study OID="Project.Parqueadero">
+<GlobalVariables>
+	<StudyName>Parqueadero</StudyName>
+	<StudyDescription>This file contains the metadata, events, and data for REDCap project "Parqueadero".</StudyDescription>
+	<ProtocolName>Parqueadero</ProtocolName>
+	<redcap:RecordAutonumberingEnabled>1</redcap:RecordAutonumberingEnabled>
+	<redcap:CustomRecordLabel></redcap:CustomRecordLabel>
+	<redcap:SecondaryUniqueField>cedula</redcap:SecondaryUniqueField>
+	<redcap:SecondaryUniqueFieldDisplayValue>1</redcap:SecondaryUniqueFieldDisplayValue>
+	<redcap:SecondaryUniqueFieldDisplayLabel>0</redcap:SecondaryUniqueFieldDisplayLabel>
+	<redcap:SchedulingEnabled>0</redcap:SchedulingEnabled>
+	<redcap:SurveysEnabled>0</redcap:SurveysEnabled>
+	<redcap:SurveyInvitationEmailField></redcap:SurveyInvitationEmailField>
+	<redcap:SurveyParticipantIdentifiers>0</redcap:SurveyParticipantIdentifiers>
+	<redcap:RandomizationEnabled>0</redcap:RandomizationEnabled>
+	<redcap:DisplayTodayNowButton>1</redcap:DisplayTodayNowButton>
+	<redcap:PreventBranchingEraseValues>0</redcap:PreventBranchingEraseValues>
+	<redcap:RequireChangeReason>0</redcap:RequireChangeReason>
+	<redcap:DataHistoryPopup>1</redcap:DataHistoryPopup>
+	<redcap:OrderRecordsByField></redcap:OrderRecordsByField>
+	<redcap:taskCompleteStatus>2</redcap:taskCompleteStatus>
+	<redcap:DataResolutionWorkflowEnabled>1</redcap:DataResolutionWorkflowEnabled>
+	<redcap:FieldCommentLogOptionEditDelete>1</redcap:FieldCommentLogOptionEditDelete>
+	<redcap:DataResolutionWorkflowHideClosedQueries>0</redcap:DataResolutionWorkflowHideClosedQueries>
+	<redcap:MyCapEnabled>0</redcap:MyCapEnabled>
+	<redcap:Purpose>0</redcap:Purpose>
+	<redcap:PurposeOther></redcap:PurposeOther>
+	<redcap:ProjectNotes></redcap:ProjectNotes>
+	<redcap:MissingDataCodes></redcap:MissingDataCodes>
+	<redcap:ProtectedEmailMode>0</redcap:ProtectedEmailMode>
+	<redcap:ProtectedEmailModeCustomText>Mensajería segura REDCap</redcap:ProtectedEmailModeCustomText>
+	<redcap:ProtectedEmailModeTrigger>ALL</redcap:ProtectedEmailModeTrigger>
+	<redcap:ProtectedEmailModeLogo></redcap:ProtectedEmailModeLogo>
+	<redcap:RepeatingInstrumentsAndEvents>
+		<redcap:RepeatingInstruments>
+			<redcap:RepeatingInstrument redcap:UniqueEventName="event_1_arm_1" redcap:RepeatInstrument="bitacora_parqueadero" redcap:CustomLabel=""/>
+		</redcap:RepeatingInstruments>
+	</redcap:RepeatingInstrumentsAndEvents>
+	<redcap:DataAccessGroupsGroup>
+		<redcap:DataAccessGroups group_name="Lote A"/>
+		<redcap:DataAccessGroups group_name="Lote B"/>
+		<redcap:DataAccessGroups group_name="Lote C"/>
+	</redcap:DataAccessGroupsGroup>
+</GlobalVariables>
+<MetaDataVersion OID="Metadata.Parqueadero_2026-03-02_2307" Name="Parqueadero" redcap:RecordIdField="record_id">
+	<FormDef OID="Form.registro_conductor" Name="Registro del conductor" Repeating="No" redcap:FormName="registro_conductor">
+		<ItemGroupRef ItemGroupOID="registro_conductor.record_id" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="registro_conductor.registro_conductor_complete" Mandatory="No"/>
+	</FormDef>
+	<FormDef OID="Form.bitacora_parqueadero" Name="Bitacora del parqueadero" Repeating="No" redcap:FormName="bitacora_parqueadero">
+		<ItemGroupRef ItemGroupOID="bitacora_parqueadero.fecha_hora" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="bitacora_parqueadero.tipo_movimiento" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="bitacora_parqueadero.bitacora_parqueadero_complete" Mandatory="No"/>
+	</FormDef>
+	<ItemGroupDef OID="registro_conductor.record_id" Name="Registro del conductor" Repeating="No">
+		<ItemRef ItemOID="record_id" Mandatory="No" redcap:Variable="record_id"/>
+		<ItemRef ItemOID="cedula" Mandatory="Yes" redcap:Variable="cedula"/>
+		<ItemRef ItemOID="nombres" Mandatory="Yes" redcap:Variable="nombres"/>
+		<ItemRef ItemOID="apellidos" Mandatory="Yes" redcap:Variable="apellidos"/>
+		<ItemRef ItemOID="tipo_persona" Mandatory="Yes" redcap:Variable="tipo_persona"/>
+		<ItemRef ItemOID="cargo" Mandatory="Yes" redcap:Variable="cargo"/>
+		<ItemRef ItemOID="area" Mandatory="Yes" redcap:Variable="area"/>
+		<ItemRef ItemOID="privilegio_parqueo" Mandatory="Yes" redcap:Variable="privilegio_parqueo"/>
+		<ItemRef ItemOID="fecha_inicio_vip" Mandatory="Yes" redcap:Variable="fecha_inicio_vip"/>
+		<ItemRef ItemOID="duracion_vip" Mandatory="Yes" redcap:Variable="duracion_vip"/>
+		<ItemRef ItemOID="fecha_expiracion_vip" Mandatory="No" redcap:Variable="fecha_expiracion_vip"/>
+		<ItemRef ItemOID="placa_1" Mandatory="No" redcap:Variable="placa_1"/>
+		<ItemRef ItemOID="placa_2" Mandatory="No" redcap:Variable="placa_2"/>
+		<ItemRef ItemOID="registro_parqueo_completo" Mandatory="No" redcap:Variable="registro_parqueo_completo"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="registro_conductor.registro_conductor_complete" Name="Form Status" Repeating="No">
+		<ItemRef ItemOID="registro_conductor_complete" Mandatory="No" redcap:Variable="registro_conductor_complete"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="bitacora_parqueadero.fecha_hora" Name="Registro de Movimiento" Repeating="No">
+		<ItemRef ItemOID="fecha_hora" Mandatory="Yes" redcap:Variable="fecha_hora"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="bitacora_parqueadero.tipo_movimiento" Name="Bitacora del parqueadero" Repeating="No">
+		<ItemRef ItemOID="tipo_movimiento" Mandatory="Yes" redcap:Variable="tipo_movimiento"/>
+		<ItemRef ItemOID="alerta_fraude" Mandatory="No" redcap:Variable="alerta_fraude"/>
+		<ItemRef ItemOID="datos_conductor_display" Mandatory="No" redcap:Variable="datos_conductor_display"/>
+		<ItemRef ItemOID="instruccion_vip" Mandatory="No" redcap:Variable="instruccion_vip"/>
+		<ItemRef ItemOID="token_vip" Mandatory="Yes" redcap:Variable="token_vip"/>
+		<ItemRef ItemOID="instruccion_discapacitado" Mandatory="No" redcap:Variable="instruccion_discapacitado"/>
+		<ItemRef ItemOID="token_discapacitado" Mandatory="Yes" redcap:Variable="token_discapacitado"/>
+		<ItemRef ItemOID="instruccion_estandar" Mandatory="No" redcap:Variable="instruccion_estandar"/>
+		<ItemRef ItemOID="color_zona_estandar" Mandatory="Yes" redcap:Variable="color_zona_estandar"/>
+		<ItemRef ItemOID="token_estandar" Mandatory="Yes" redcap:Variable="token_estandar"/>
+		<ItemRef ItemOID="color_zona_devuelta" Mandatory="Yes" redcap:Variable="color_zona_devuelta"/>
+		<ItemRef ItemOID="token_devuelto" Mandatory="Yes" redcap:Variable="token_devuelto"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="bitacora_parqueadero.bitacora_parqueadero_complete" Name="Form Status" Repeating="No">
+		<ItemRef ItemOID="bitacora_parqueadero_complete" Mandatory="No" redcap:Variable="bitacora_parqueadero_complete"/>
+	</ItemGroupDef>
+	<ItemDef OID="record_id" Name="record_id" DataType="text" Length="999" redcap:Variable="record_id" redcap:FieldType="text" redcap:FieldNote="Autogenerado por REDCap" redcap:Identifier="y">
+		<Question><TranslatedText>ID de Registro (Interno)</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="cedula" Name="cedula" DataType="integer" Length="999" redcap:Variable="cedula" redcap:FieldType="text" redcap:TextValidationType="int" redcap:FieldNote="Ingrese los 10 dígitos" redcap:Identifier="y" redcap:RequiredField="y">
+		<Question><TranslatedText>Número de Cédula</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="nombres" Name="nombres" DataType="text" Length="999" redcap:Variable="nombres" redcap:FieldType="text" redcap:Identifier="y" redcap:RequiredField="y">
+		<Question><TranslatedText>Nombres</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="apellidos" Name="apellidos" DataType="text" Length="999" redcap:Variable="apellidos" redcap:FieldType="text" redcap:Identifier="y" redcap:RequiredField="y">
+		<Question><TranslatedText>Apellidos</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="tipo_persona" Name="tipo_persona" DataType="text" Length="1" redcap:Variable="tipo_persona" redcap:FieldType="select" redcap:RequiredField="y">
+		<Question><TranslatedText>Tipo de Persona</TranslatedText></Question>
+		<CodeListRef CodeListOID="tipo_persona.choices"/>
+	</ItemDef>
+	<ItemDef OID="cargo" Name="cargo" DataType="text" Length="1" redcap:Variable="cargo" redcap:FieldType="select" redcap:RequiredField="y">
+		<Question><TranslatedText>Cargo</TranslatedText></Question>
+		<CodeListRef CodeListOID="cargo.choices"/>
+	</ItemDef>
+	<ItemDef OID="area" Name="area" DataType="text" Length="1" redcap:Variable="area" redcap:FieldType="select" redcap:RequiredField="y">
+		<Question><TranslatedText>Área</TranslatedText></Question>
+		<CodeListRef CodeListOID="area.choices"/>
+	</ItemDef>
+	<ItemDef OID="privilegio_parqueo" Name="privilegio_parqueo" DataType="text" Length="1" redcap:Variable="privilegio_parqueo" redcap:FieldType="radio" redcap:FieldNote="Asignación de espacios preferenciales" redcap:RequiredField="y">
+		<Question><TranslatedText>Nivel de Privilegio (Parqueadero)</TranslatedText></Question>
+		<CodeListRef CodeListOID="privilegio_parqueo.choices"/>
+	</ItemDef>
+	<ItemDef OID="fecha_inicio_vip" Name="fecha_inicio_vip" DataType="date" Length="999" redcap:Variable="fecha_inicio_vip" redcap:FieldType="text" redcap:TextValidationType="date_ymd" redcap:RequiredField="y" redcap:BranchingLogic="[privilegio_parqueo] = &#039;2&#039;" redcap:FieldAnnotation="@TODAY">
+		<Question><TranslatedText>Fecha de Inicio VIP</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="duracion_vip" Name="duracion_vip" DataType="text" Length="2" redcap:Variable="duracion_vip" redcap:FieldType="radio" redcap:RequiredField="y" redcap:BranchingLogic="[privilegio_parqueo] = &#039;2&#039;">
+		<Question><TranslatedText>Duración del Pase VIP</TranslatedText></Question>
+		<CodeListRef CodeListOID="duracion_vip.choices"/>
+	</ItemDef>
+	<ItemDef OID="fecha_expiracion_vip" Name="fecha_expiracion_vip" DataType="date" Length="999" redcap:Variable="fecha_expiracion_vip" redcap:FieldType="text" redcap:TextValidationType="date_ymd" redcap:FieldNote="Calculado automáticamente por el sistema" redcap:BranchingLogic="[privilegio_parqueo] = &#039;2&#039;" redcap:FieldAnnotation="@CALCDATE([fecha_inicio_vip], [duracion_vip], &#039;d&#039;) @READONLY">
+		<Question><TranslatedText>Fecha de Expiración VIP</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="placa_1" Name="placa_1" DataType="text" Length="999" redcap:Variable="placa_1" redcap:FieldType="text" redcap:FieldNote="Ej. PAB-1234" redcap:Identifier="y">
+		<Question><TranslatedText>Placa Vehículo 1</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="placa_2" Name="placa_2" DataType="text" Length="999" redcap:Variable="placa_2" redcap:FieldType="text" redcap:FieldNote="Ej. PCX-5678 (Pico y Placa)" redcap:Identifier="y">
+		<Question><TranslatedText>Placa Vehículo 2</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="registro_parqueo_completo" Name="registro_parqueo_completo" DataType="text" Length="999" redcap:Variable="registro_parqueo_completo" redcap:FieldType="text">
+		<Question><TranslatedText>Completado</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="registro_conductor_complete" Name="registro_conductor_complete" DataType="text" Length="1" redcap:Variable="registro_conductor_complete" redcap:FieldType="select" redcap:SectionHeader="Form Status">
+		<Question><TranslatedText>Complete?</TranslatedText></Question>
+		<CodeListRef CodeListOID="registro_conductor_complete.choices"/>
+	</ItemDef>
+	<ItemDef OID="fecha_hora" Name="fecha_hora" DataType="datetime" Length="999" redcap:Variable="fecha_hora" redcap:FieldType="text" redcap:TextValidationType="datetime_seconds_ymd" redcap:SectionHeader="Registro de Movimiento" redcap:RequiredField="y" redcap:FieldAnnotation="@NOW">
+		<Question><TranslatedText>Fecha y Hora</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="tipo_movimiento" Name="tipo_movimiento" DataType="text" Length="1" redcap:Variable="tipo_movimiento" redcap:FieldType="radio" redcap:RequiredField="y">
+		<Question><TranslatedText>Tipo de Movimiento</TranslatedText></Question>
+		<CodeListRef CodeListOID="tipo_movimiento.choices"/>
+	</ItemDef>
+	<ItemDef OID="alerta_fraude" Name="alerta_fraude" DataType="text" Length="999" redcap:Variable="alerta_fraude" redcap:FieldType="descriptive" redcap:BranchingLogic="[tipo_movimiento] = &#039;1&#039;">
+		<Question><TranslatedText>ATENCIÓN GUARDIA: Revise el historial de arriba. Si el último registro es una ENTRADA y no hay SALIDA, este conductor ya tiene un vehículo adentro.</TranslatedText><redcap:FormattedTranslatedText>&lt;div style=&#039;color:red; font-weight:bold; padding:5px; border:1px solid red;&#039;&gt;ATENCIÓN GUARDIA: Revise el historial de arriba. Si el último registro es una ENTRADA y no hay SALIDA, este conductor ya tiene un vehículo adentro.&lt;/div&gt;</redcap:FormattedTranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="datos_conductor_display" Name="datos_conductor_display" DataType="text" Length="999" redcap:Variable="datos_conductor_display" redcap:FieldType="descriptive">
+		<Question><TranslatedText>Datos del conductor:</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="instruccion_vip" Name="instruccion_vip" DataType="text" Length="999" redcap:Variable="instruccion_vip" redcap:FieldType="descriptive" redcap:BranchingLogic="[privilegio_parqueo] = &#039;2&#039; and [tipo_movimiento] = &#039;1&#039; and datediff(&#039;today&#039;, [fecha_expiracion_vip], &#039;d&#039;, &#039;ymd&#039;, true) &gt;= 0">
+		<Question><TranslatedText>🌟 CONDUCTOR VIP: entregar una cartilla dorada.</TranslatedText><redcap:FormattedTranslatedText>&lt;div style=&#039;color:#856404; background-color:#fff3cd; padding:10px; border:1px solid #ffeeba; border-radius:5px;&#039;&gt;&lt;strong&gt;🌟 CONDUCTOR VIP:&lt;/strong&gt; entregar una &lt;strong&gt;cartilla dorada&lt;/strong&gt;.&lt;/div&gt;</redcap:FormattedTranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="token_vip" Name="token_vip" DataType="integer" Length="999" redcap:Variable="token_vip" redcap:FieldType="text" redcap:TextValidationType="int" redcap:FieldNote="Solo ingrese el número (Ej. 5)" redcap:RequiredField="y" redcap:BranchingLogic="[privilegio_parqueo] = &#039;2&#039; and [tipo_movimiento] = &#039;1&#039; and datediff(&#039;today&#039;, [fecha_expiracion_vip], &#039;d&#039;, &#039;ymd&#039;, true) &gt;= 0">
+		<Question><TranslatedText>Número de cartilla dorada asignada</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="instruccion_discapacitado" Name="instruccion_discapacitado" DataType="text" Length="999" redcap:Variable="instruccion_discapacitado" redcap:FieldType="descriptive" redcap:BranchingLogic="[privilegio_parqueo] = &#039;3&#039; and [tipo_movimiento] = &#039;1&#039;">
+		<Question><TranslatedText>♿ CONDUCTOR CON DISCAPACIDAD O EMBARAZO: entregar una cartilla de discapacidad (espacios reservados).</TranslatedText><redcap:FormattedTranslatedText>&lt;div style=&#039;color:#0c5460; background-color:#d1ecf1; padding:10px; border:1px solid #bee5eb; border-radius:5px;&#039;&gt;&lt;strong&gt;♿ CONDUCTOR CON DISCAPACIDAD O EMBARAZO:&lt;/strong&gt; entregar una &lt;strong&gt;cartilla de discapacidad&lt;/strong&gt; (espacios reservados).&lt;/div&gt;</redcap:FormattedTranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="token_discapacitado" Name="token_discapacitado" DataType="integer" Length="999" redcap:Variable="token_discapacitado" redcap:FieldType="text" redcap:TextValidationType="int" redcap:FieldNote="Solo ingrese el número" redcap:RequiredField="y" redcap:BranchingLogic="[privilegio_parqueo] = &#039;3&#039; and [tipo_movimiento] = &#039;1&#039;">
+		<Question><TranslatedText>Número de cartilla de discapacidad asignado</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="instruccion_estandar" Name="instruccion_estandar" DataType="text" Length="999" redcap:Variable="instruccion_estandar" redcap:FieldType="descriptive" redcap:BranchingLogic="([privilegio_parqueo] = &#039;1&#039; or ([privilegio_parqueo] = &#039;2&#039; and datediff(&#039;today&#039;, [fecha_expiracion_vip], &#039;d&#039;, &#039;ymd&#039;, true) &lt; 0)) and [tipo_movimiento] = &#039;1&#039;">
+		<Question><TranslatedText>🚗 CONDUCTOR ESTÁNDAR: Seleccione el color de la zona y entregue la cartilla.</TranslatedText><redcap:FormattedTranslatedText>&lt;div style=&#039;color:#004085; background-color:#cce5ff; padding:10px; border:1px solid #b8daff; border-radius:5px;&#039;&gt;&lt;strong&gt;🚗 CONDUCTOR ESTÁNDAR:&lt;/strong&gt; Seleccione el color de la zona y entregue la cartilla.&lt;/div&gt;</redcap:FormattedTranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="color_zona_estandar" Name="color_zona_estandar" DataType="text" Length="1" redcap:Variable="color_zona_estandar" redcap:FieldType="radio" redcap:FieldNote="Indique al conductor a qué zona dirigirse" redcap:RequiredField="y" redcap:BranchingLogic="([privilegio_parqueo] = &#039;1&#039; or ([privilegio_parqueo] = &#039;2&#039; and datediff(&#039;today&#039;, [fecha_expiracion_vip], &#039;d&#039;, &#039;ymd&#039;, true) &lt; 0)) and [tipo_movimiento] = &#039;1&#039;">
+		<Question><TranslatedText>Color de Zona Asignada</TranslatedText></Question>
+		<CodeListRef CodeListOID="color_zona_estandar.choices"/>
+	</ItemDef>
+	<ItemDef OID="token_estandar" Name="token_estandar" DataType="integer" Length="999" redcap:Variable="token_estandar" redcap:FieldType="text" redcap:TextValidationType="int" redcap:FieldNote="Solo ingrese el número (Ej. 14)" redcap:RequiredField="y" redcap:BranchingLogic="([privilegio_parqueo] = &#039;1&#039; or ([privilegio_parqueo] = &#039;2&#039; and datediff(&#039;today&#039;, [fecha_expiracion_vip], &#039;d&#039;, &#039;ymd&#039;, true) &lt; 0)) and [tipo_movimiento] = &#039;1&#039;">
+		<Question><TranslatedText>Número de cartilla de color asignado</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="color_zona_devuelta" Name="color_zona_devuelta" DataType="text" Length="1" redcap:Variable="color_zona_devuelta" redcap:FieldType="radio" redcap:RequiredField="y" redcap:BranchingLogic="[tipo_movimiento] = &#039;2&#039;">
+		<Question><TranslatedText>Color de cartilla devuelto</TranslatedText></Question>
+		<CodeListRef CodeListOID="color_zona_devuelta.choices"/>
+	</ItemDef>
+	<ItemDef OID="token_devuelto" Name="token_devuelto" DataType="integer" Length="999" redcap:Variable="token_devuelto" redcap:FieldType="text" redcap:TextValidationType="int" redcap:FieldNote="Solo ingrese el número (Ej. 14)" redcap:RequiredField="y" redcap:BranchingLogic="[tipo_movimiento] = &#039;2&#039;">
+		<Question><TranslatedText>Número de cartilla devuelto</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="bitacora_parqueadero_complete" Name="bitacora_parqueadero_complete" DataType="text" Length="1" redcap:Variable="bitacora_parqueadero_complete" redcap:FieldType="select" redcap:SectionHeader="Form Status">
+		<Question><TranslatedText>Complete?</TranslatedText></Question>
+		<CodeListRef CodeListOID="bitacora_parqueadero_complete.choices"/>
+	</ItemDef>
+	<CodeList OID="tipo_persona.choices" Name="tipo_persona" DataType="text" redcap:Variable="tipo_persona">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Funcionario</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>Institucional</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="3"><Decode><TranslatedText>Invitado</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="4"><Decode><TranslatedText>Público</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="cargo.choices" Name="cargo" DataType="text" redcap:Variable="cargo">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Médico</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>Enfermería</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="3"><Decode><TranslatedText>Administrativo</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="4"><Decode><TranslatedText>Otro</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="area.choices" Name="area" DataType="text" redcap:Variable="area">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Emergencia</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>UCI</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="3"><Decode><TranslatedText>Pediatría</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="4"><Decode><TranslatedText>General</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="privilegio_parqueo.choices" Name="privilegio_parqueo" DataType="text" redcap:Variable="privilegio_parqueo">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Estándar</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>VIP / Golden Box</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="3"><Decode><TranslatedText>Discapacitado</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="duracion_vip.choices" Name="duracion_vip" DataType="text" redcap:Variable="duracion_vip">
+		<CodeListItem CodedValue="30"><Decode><TranslatedText>30 días</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="60"><Decode><TranslatedText>60 días</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="90"><Decode><TranslatedText>90 días</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="registro_conductor_complete.choices" Name="registro_conductor_complete" DataType="text" redcap:Variable="registro_conductor_complete">
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Incomplete</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Unverified</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>Complete</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="tipo_movimiento.choices" Name="tipo_movimiento" DataType="text" redcap:Variable="tipo_movimiento">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Entrada</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>Salida</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="color_zona_estandar.choices" Name="color_zona_estandar" DataType="text" redcap:Variable="color_zona_estandar">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>🟪 Zona Morada</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>🟦 Zona Azul</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="3"><Decode><TranslatedText>🟩 Zona Verde</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="4"><Decode><TranslatedText>🟧 Zona Naranja</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="color_zona_devuelta.choices" Name="color_zona_devuelta" DataType="text" redcap:Variable="color_zona_devuelta">
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>🌟 Dorado (VIP)</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>🟪 Morado</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>🟦 Azul</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="3"><Decode><TranslatedText>🟩 Verde</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="4"><Decode><TranslatedText>🟧 Naranja</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="5"><Decode><TranslatedText>♿ Discapacidad</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="bitacora_parqueadero_complete.choices" Name="bitacora_parqueadero_complete" DataType="text" redcap:Variable="bitacora_parqueadero_complete">
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Incomplete</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Unverified</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>Complete</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+</MetaDataVersion>
+</Study>
+</ODM>

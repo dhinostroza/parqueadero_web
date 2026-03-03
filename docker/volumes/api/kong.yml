@@ -1,0 +1,62 @@
+# ═══════════════════════════════════════════════════════════════════════════
+# Kong Declarative Configuration — Parqueadero
+# Routes REST API, Realtime, and Studio through a single gateway on :8000
+# ═══════════════════════════════════════════════════════════════════════════
+
+_format_version: "2.1"
+_transform: true
+
+# ─── Services ─────────────────────────────────────────────────────────────
+
+services:
+
+  # PostgREST — REST API
+  - name: rest-v1
+    url: http://rest:3000/
+    routes:
+      - name: rest-v1-route
+        strip_path: true
+        paths:
+          - /rest/v1/
+    plugins:
+      - name: cors
+      - name: key-auth
+        config:
+          hide_credentials: false
+          key_names:
+            - apikey
+
+  # Supabase Realtime — WebSocket
+  - name: realtime-v1
+    url: http://realtime:4000/socket/
+    routes:
+      - name: realtime-v1-route
+        strip_path: true
+        paths:
+          - /realtime/v1/
+    plugins:
+      - name: cors
+      - name: key-auth
+        config:
+          hide_credentials: false
+          key_names:
+            - apikey
+
+  # Supabase Studio Meta (introspection)
+  - name: meta
+    url: http://meta:8080/
+    routes:
+      - name: meta-route
+        strip_path: true
+        paths:
+          - /pg/
+
+# ─── Consumers (API key auth) ────────────────────────────────────────────
+
+consumers:
+  - username: anon
+    keyauth_credentials:
+      - key: ${SUPABASE_ANON_KEY}
+  - username: service_role
+    keyauth_credentials:
+      - key: ${SUPABASE_SERVICE_KEY}
