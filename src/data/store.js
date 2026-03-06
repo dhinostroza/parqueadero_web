@@ -494,9 +494,9 @@ export async function seedDemoData() {
     // Seed some log entries
     const now = new Date();
     const entries = [
-        { cedula: '1712345678', tipo_movimiento: '1', lote: 'Lote A - Adoquin', token_type: 'vip', token_number: 3, fecha_hora: new Date(now - 3600000 * 2).toISOString() },
+        { cedula: '1712345678', tipo_movimiento: '1', lote: 'Lote A - Adoquín', token_type: 'vip', token_number: 3, fecha_hora: new Date(now - 3600000 * 2).toISOString() },
         { cedula: '1798765432', tipo_movimiento: '1', lote: 'Lote B - Subsuelo', token_type: 'standard', color_zona: '2', token_number: 14, fecha_hora: new Date(now - 3600000).toISOString() },
-        { cedula: '1756781234', tipo_movimiento: '1', lote: 'Lote A - Adoquin', token_type: 'disabled', token_number: 1, fecha_hora: new Date(now - 1800000).toISOString() },
+        { cedula: '1756781234', tipo_movimiento: '1', lote: 'Lote C - Consulta Externa', token_type: 'disabled', token_number: 1, fecha_hora: new Date(now - 1800000).toISOString() },
     ];
 
     for (const e of entries) {

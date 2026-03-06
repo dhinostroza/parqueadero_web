@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name>Parqueaderos HPAS</name>
+    <NetworkLink>
+      <name>Parqueadero HPAS</name>
+      <Link>
+        <href><![CDATA[https://www.google.com/maps/d/u/0/kml?forcekml=1&mid=1HAcdqiHvRidXm5ce2G2HHvVJUbRo92A&lid=YgsSU9su6RI]]></href>
+      </Link>
+    </NetworkLink>
+  </Document>
+</kml>

@@ -13,7 +13,7 @@ const _users = {
         password: '123',
         name: 'Guardia - Lote A',
         role: _roles.GUARDIA,
-        assignedLot: 'Lote A - Adoquin',
+        assignedLot: 'Lote A - Adoquín',
         allowedPages: ['guard']
     },
     guardia_b: {
@@ -31,7 +31,7 @@ const _users = {
         password: '123',
         name: 'Guardia - Lote C',
         role: _roles.GUARDIA,
-        assignedLot: 'Lote C - Consulta externa',
+        assignedLot: 'Lote C - Consulta Externa',
         allowedPages: ['guard']
     },
     th: {

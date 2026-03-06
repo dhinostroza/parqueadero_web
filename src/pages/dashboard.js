@@ -1,6 +1,6 @@
 // ─── Dashboard Page ─────────────────────────────────────────────────────────
 import { getTodayStats, getOccupancyByZone, getRecentActivity, getOccupancyByLot, getAllDrivers, subscribeToChanges, unsubscribeFromChanges, getActiveVehicles } from '../data/store.js';
-import { ZONE_COLORS, MOVEMENT_TYPES, LOT_CAPACITY, PARKING_LOTS } from '../data/constants.js';
+import { ZONE_COLORS, MOVEMENT_TYPES, LOT_CAPACITY, PARKING_LOTS, PARKING_POLYGONS } from '../data/constants.js';
 
 let _dashboardChannel = null;
 
@@ -35,6 +35,9 @@ export async function renderDashboard(container) {
 
     container.innerHTML = buildDashboardHTML(stats, zones, recent, allDrivers, lotData, activeVehicles);
 
+    // Initialize map after HTML is in DOM
+    initMap(lotData, activeVehicles);
+
     // Set up real-time subscription
     unsubscribeFromChanges();
     _dashboardChannel = subscribeToChanges(async (table, payload) => {
@@ -58,6 +61,18 @@ function buildDashboardHTML(stats, zones, recent, allDrivers, lotData, activeVeh
     <div class="page-header">
       <h2>🏢 Panel de Control</h2>
       <p>Monitoreo en tiempo real del parqueadero — ${new Date().toLocaleDateString('es-EC', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
+    </div>
+
+    <!-- Maps Area -->
+    <div class="maps-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+      ${PARKING_LOTS.map((lot, idx) => `
+        <div class="card" style="margin-bottom: 0;">
+          <div class="card-header">
+            <span class="card-title">🗺️ ${lot}</span>
+          </div>
+          <div id="hpas-map-${idx}" style="height: 250px; width: 100%; border-radius: 8px; z-index: 1;"></div>
+        </div>
+      `).join('')}
     </div>
 
     <!-- Key Stats -->
@@ -107,25 +122,9 @@ function buildDashboardHTML(stats, zones, recent, allDrivers, lotData, activeVeh
     </div>
 
     <!-- Lot Occupancy -->
-    <div class="lot-grid">
+    <div class="lot-grid" style="margin-bottom: 2rem;">
       ${lotData.map(({ lot, cap, occupied }) => {
     const pct = Math.round((occupied / cap.total) * 100);
-    const activeInLot = activeVehicles.filter(v => v.entry.lote === lot);
-    const slotsHTML = Array.from({ length: cap.total }, (_, i) => {
-      if (i < activeInLot.length) {
-        const activeItem = activeInLot[i];
-        const entry = activeItem.entry;
-        const driver = activeItem.driver;
-        const activePlaca = activeItem.activePlaca || driver.placa_1 || 'N/A';
-
-        const zoneAttr = entry.color_zona ? ` data-zone="${entry.color_zona}"` : '';
-        const tokenAttr = ['vip', 'disabled'].includes(entry.token_type) ? ` data-token="${entry.token_type}"` : '';
-        const tooltip = `${driver.nombres} ${driver.apellidos} - Placa: ${activePlaca}`;
-        return `<div class="map-slot occupied" title="${tooltip}"${zoneAttr}${tokenAttr}>🚗</div>`;
-      }
-      return `<div class="map-slot"></div>`;
-    }).join('');
-
     return `
           <div class="lot-card">
             <div class="lot-header">
@@ -139,9 +138,6 @@ function buildDashboardHTML(stats, zones, recent, allDrivers, lotData, activeVeh
               <div class="fill ${pct > 80 ? 'high' : ''}" style="width:${pct}%"></div>
             </div>
             <div style="font-size:0.72rem;color:var(--text-muted);margin-top:4px;text-align:right;">${pct}% ocupado</div>
-            <div class="parking-map">
-              ${slotsHTML}
-            </div>
           </div>`;
   }).join('')}
     </div>
@@ -205,4 +201,81 @@ function buildDashboardHTML(stats, zones, recent, allDrivers, lotData, activeVeh
       </div>
     </div>
   `;
+}
+
+// ─── Map Initialization ──────────────────────────────────────────────
+let _leafletMaps = [];
+
+function initMap(lotData, activeVehicles) {
+  // Cleanup old maps
+  _leafletMaps.forEach(map => map && map.remove());
+  _leafletMaps = [];
+
+  const lotToPolyId = {
+    "Lote B - Subsuelo": "Parqueadero Subsuelo",
+    "Lote A - Adoquín": "Parqueadero Adoquín",
+    "Lote C - Consulta Externa": "Parqueadero Consulta Externa",
+  };
+
+  PARKING_LOTS.forEach((lotName, idx) => {
+    const containerId = `hpas-map-${idx}`;
+    const mapContainer = document.getElementById(containerId);
+    if (!mapContainer) return;
+
+    // Default center (general hospital area)
+    let center = [-0.1281, -78.4974];
+    let defaultZoom = 18;
+
+    const map = L.map(containerId).setView(center, defaultZoom);
+    _leafletMaps.push(map);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 21,
+      attribution: '© OpenStreetMap'
+    }).addTo(map);
+
+    const lotStats = lotData.find(l => l.lot === lotName);
+    const polyId = lotToPolyId[lotName];
+    const polyDef = PARKING_POLYGONS.find(p => p.id === polyId);
+
+    let color = "#3b82f6"; // default blue
+    if (lotStats) {
+      const pct = Math.round((lotStats.occupied / lotStats.cap.total) * 100);
+      if (pct > 80) color = "#ef4444"; // red
+      else if (pct > 50) color = "#f59e0b"; // orange
+      else color = "#22c55e"; // green
+    }
+
+    if (polyDef) {
+      let popupContent = `<b>${lotName}</b><br>`;
+      if (lotStats) {
+        const pct = Math.round((lotStats.occupied / lotStats.cap.total) * 100);
+        popupContent += `<hr style="margin:4px 0;border-color:#eee"><br><b>Ocupación:</b> ${lotStats.occupied} / ${lotStats.cap.total} (${pct}%)`;
+      }
+
+      const polygon = L.polygon(polyDef.coordinates, {
+        color: color,
+        fillColor: color,
+        fillOpacity: 0.4,
+        weight: 2
+      }).addTo(map);
+
+      polygon.bindPopup(popupContent);
+      polygon.bindTooltip(`${lotName}`, { permanent: false, direction: "center" });
+
+      // Fit to polygon bounds
+      map.fitBounds(L.latLngBounds(polyDef.coordinates));
+    } else {
+      // For lots without a specific polygon (e.g. Temporal), add a marker in a generic location
+      const genericLocation = [-0.12805, -78.4975];
+      const marker = L.circleMarker(genericLocation, {
+        radius: 12,
+        color: color,
+        fillColor: color,
+        fillOpacity: 0.6,
+      }).addTo(map);
+      marker.bindPopup(`<b>${lotName}</b><br>Espacio sin delimitar`);
+      map.setView(genericLocation, 19);
+    }
+  });
 }
